@@ -1,5 +1,6 @@
 import json
 import random
+import re
 from math import sqrt
 from time import time
 
@@ -61,6 +62,18 @@ def normalization(score_dict: dict) -> dict:
         key: value ** 0.75 / max_value
         for key, value in score_dict.items()
     }
+
+
+def camel_to_underline(word: str) -> str:
+    return re.sub(r'([a-z])([A-Z])', r'\1_\2', word).lower()
+
+
+def fmt(job: dict) -> dict:
+    ret = {"jid": job['_id']}
+    for key, value in job.items():
+        if key[0] != '_':
+            ret[camel_to_underline(key)] = value
+    return ret
 
 
 class User:
@@ -130,7 +143,7 @@ class User:
         self.jobs_recommend = []
         for key, _ in self.job_score_vector:
             job = self.jobs[key]
-            self.jobs_recommend.append(job)
+            self.jobs_recommend.append(fmt(job))
 
     def get_recommend_lazy(self):
         if time() - self.timespan > self.limit_time:
