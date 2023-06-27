@@ -1,4 +1,5 @@
 import json
+import random
 from math import sqrt
 from time import time
 
@@ -81,6 +82,7 @@ class User:
         db = mongodb()
         self.jobs = {item['_id']: item for item in db['job'].find()}
         self.job_keys = list(self.jobs.keys())
+        random.shuffle(self.job_keys)
         self.users = {
             item['_id']: {
                 '_id': item['_id'],
@@ -88,9 +90,9 @@ class User:
             }
             for item in db['recommend'].find()
         }
-
         if self.uid not in self.users:
-            self.users.append({self.uid: {'_id': self.uid, 'score': {}}})
+            self.users[self.uid] = {'_id': self.uid, 'score': {}}
+
         self.calc_k_similar_user()
         self.calc_n_highest_score_job()
         self.find_all_jobs_by_id()
@@ -133,6 +135,7 @@ class User:
         if time() - self.timespan > self.limit_time:
             self.upgrade_value()
         return {
+            'update_time': int(self.timespan * 1000),
             'similarity': self.similarity_vector,
             'job_score': self.job_score_vector,
             'jobs': self.jobs
