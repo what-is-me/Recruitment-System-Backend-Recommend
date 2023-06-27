@@ -138,7 +138,7 @@ class User:
             'update_time': int(self.timespan * 1000),
             'similarity': self.similarity_vector,
             'job_score': self.job_score_vector,
-            'jobs': self.jobs
+            'jobs': self.jobs_recommend
         }
 
 
