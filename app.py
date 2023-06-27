@@ -5,6 +5,7 @@ from time import time
 
 import pymongo
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pyttl import TTLDict
 
 """
@@ -149,6 +150,13 @@ def pretty_print(dic):
 
 app = FastAPI()
 user_dict = TTLDict()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/recommend/{uid}")
